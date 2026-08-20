@@ -1,0 +1,21 @@
+# Flutter/Dart
+.dart_tool/
+.packages
+.pub/
+pubspec.lock
+build/
+coverage/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Android/iOS generated local state
+android/.gradle/
+android/local.properties
+ios/Pods/
+ios/.symlinks/
+
+# Misc
+.DS_Store
