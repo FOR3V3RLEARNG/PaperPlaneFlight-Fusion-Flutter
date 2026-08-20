@@ -147,57 +147,78 @@ class MorphingNavigationIsland extends StatelessWidget {
 }
 
 class _MorphingDestination extends StatelessWidget {
-  const _MorphingDestination({required this.destination, required this.selected});
+  const _MorphingDestination({
+    required this.destination,
+    required this.selected,
+  });
 
   final FlightDestination destination;
   final bool selected;
 
   @override
   Widget build(BuildContext context) {
+    void activate() {
+      HapticFeedback.selectionClick();
+      context.go(destination.path);
+    }
+
     return Semantics(
       button: true,
       selected: selected,
       label: destination.label,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 2),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            customBorder: const StadiumBorder(),
-            onTap: () {
-              HapticFeedback.selectionClick();
-              context.go(destination.path);
-            },
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeOutCubic,
-              padding: EdgeInsets.symmetric(horizontal: selected ? 12 : 8),
-              decoration: BoxDecoration(
-                color: selected ? FlightColors.skyBlue.withValues(alpha: .18) : Colors.transparent,
-                borderRadius: BorderRadius.circular(28),
-                border: Border.all(
-                  color: selected ? FlightColors.skyBlue.withValues(alpha: .34) : Colors.transparent,
+      onTap: activate,
+      child: ExcludeSemantics(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 2),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              customBorder: const StadiumBorder(),
+              onTap: activate,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeOutCubic,
+                padding: EdgeInsets.symmetric(
+                  horizontal: selected ? 12 : 8,
                 ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Icon(
-                    selected ? destination.selectedIcon : destination.icon,
-                    color: selected ? FlightColors.aeroCyan : FlightColors.muted,
-                    size: 23,
+                decoration: BoxDecoration(
+                  color: selected
+                      ? FlightColors.skyBlue.withValues(alpha: .18)
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(28),
+                  border: Border.all(
+                    color: selected
+                        ? FlightColors.skyBlue.withValues(alpha: .34)
+                        : Colors.transparent,
                   ),
-                  AnimatedSize(
-                    duration: const Duration(milliseconds: 260),
-                    curve: Curves.easeOutCubic,
-                    child: selected
-                        ? Padding(
-                            padding: const EdgeInsets.only(left: 7),
-                            child: Text(destination.label, maxLines: 1),
-                          )
-                        : const SizedBox.shrink(),
-                  ),
-                ],
+                ),
+                child: Row(
+                  mainAxisAlignment: selected
+                      ? MainAxisAlignment.start
+                      : MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      selected
+                          ? destination.selectedIcon
+                          : destination.icon,
+                      color: selected
+                          ? FlightColors.aeroCyan
+                          : FlightColors.muted,
+                      size: 23,
+                    ),
+                    if (selected) ...<Widget>[
+                      const SizedBox(width: 7),
+                      Expanded(
+                        child: Text(
+                          destination.label,
+                          maxLines: 1,
+                          softWrap: false,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
               ),
             ),
           ),
