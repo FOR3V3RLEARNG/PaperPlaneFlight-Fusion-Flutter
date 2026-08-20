@@ -8,6 +8,9 @@ fi
 
 flutter --version
 flutter create --platforms=android --project-name=paper_plane_flight .
+if grep -q 'MyApp' test/widget_test.dart 2>/dev/null; then
+  rm test/widget_test.dart
+fi
 flutter pub get
 dart format --output=none lib test integration_test
 flutter analyze --fatal-warnings
