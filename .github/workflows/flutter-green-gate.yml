@@ -94,29 +94,7 @@ jobs:
           ram-size: 2048M
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot -no-metrics -camera-back none
-          script: |
-            set -e
-            flutter devices
-            flutter build apk --debug
-            adb -s emulator-5554 install -r build/app/outputs/flutter-apk/app-debug.apk
-            adb -s emulator-5554 logcat -c
-            adb -s emulator-5554 shell am force-stop com.example.paper_plane_flight
-            adb -s emulator-5554 shell monkey -p com.example.paper_plane_flight -c android.intent.category.LAUNCHER 1
-            sleep 10
-            PID="$(adb -s emulator-5554 shell pidof com.example.paper_plane_flight | tr -d '\r')"
-            if [ -z "$PID" ]; then
-              echo "Paper Plane Flight process is not running after launch"
-              adb -s emulator-5554 logcat -d -t 300
-              exit 1
-            fi
-            echo "Paper Plane Flight running as PID $PID"
-            adb -s emulator-5554 shell dumpsys activity activities | grep -m1 'com.example.paper_plane_flight' || true
-            if adb -s emulator-5554 logcat -d -t 500 | grep -E 'FATAL EXCEPTION|Process: com\.example\.paper_plane_flight.*has died'; then
-              echo "Fatal Android runtime error detected"
-              exit 1
-            fi
-            echo "Android runtime smoke test passed"
-
+          script: bash .github/scripts/android_runtime_smoke.sh
   release-android:
     name: Release APK + AAB
     needs: [certify, android-integration]
