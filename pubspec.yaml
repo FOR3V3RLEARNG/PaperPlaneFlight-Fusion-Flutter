@@ -1,7 +1,7 @@
 name: paper_plane_flight
-description: Fusion AI production concept — a Material 3 Expressive paper-plane flight game.
 publish_to: none
-version: 1.0.0+100
+description: PAPER PLANE FLIGHT v2.2 Character Roster + Multiplayer — Flutter + Flame.
+version: 2.2.0+22
 
 environment:
   sdk: '>=3.12.0 <4.0.0'
@@ -9,25 +9,19 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  animations: 2.2.0
-  flex_color_scheme: 8.4.0
-  flutter_animate: 4.5.2
-  flutter_riverpod: 3.4.2
-  go_router: 17.5.0
-  skeletonizer: 2.1.3
+  flame: ^1.38.0
+  flutter_riverpod: ^3.4.2
+  go_router: ^17.5.0
+  shared_preferences: ^2.5.5
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   integration_test:
     sdk: flutter
-  flutter_lints: 6.0.0
+  flutter_lints: ^6.0.0
 
 flutter:
   uses-material-design: true
   assets:
-    - assets/brand/app_icon_reference.png
-    - assets/brand/splash_mark_reference.png
-    - assets/reference/paper_plane_flight_design_showcase.png
-    - assets/reference/paper_plane_flight_gameplay_ui_kit.png
-    - assets/reference/paper_plane_flight_app_storyboard.png
+    - assets/reference/

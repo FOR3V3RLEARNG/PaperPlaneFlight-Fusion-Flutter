@@ -81,7 +81,7 @@ jobs:
           sudo udevadm trigger --name-match=kvm || true
           sudo chmod 666 /dev/kvm || true
 
-      - name: Run Android integration journey
+      - name: Run v2.2 Android integration journey
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 34
@@ -99,7 +99,7 @@ jobs:
           script: |
             adb devices
             flutter devices
-            flutter test integration_test/navigation_flow_test.dart -d emulator-5554
+            flutter test integration_test/app_smoke_test.dart -d emulator-5554
 
   release-android:
     name: Release APK + AAB
@@ -137,7 +137,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: paper-plane-flight-android
+          name: paper-plane-flight-v2-2-android
           path: |
             build/app/outputs/flutter-apk/app-release.apk
             build/app/outputs/bundle/release/app-release.aab

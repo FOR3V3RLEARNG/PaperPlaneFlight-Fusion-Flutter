@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/theme.dart';
-import '../../widgets/glass_surface.dart';
-import '../../widgets/morphing_metric.dart';
-import '../../widgets/paper_plane_mark.dart';
+import '../../data/race_content.dart';
+import '../../game/models/race_models.dart';
+import '../../game/systems/token_wallet.dart';
+import '../../game/systems/wing_progression.dart';
+import '../characters/character_select_page.dart';
 
 class HangarPage extends StatefulWidget {
   const HangarPage({super.key});
@@ -14,167 +16,150 @@ class HangarPage extends StatefulWidget {
 }
 
 class _HangarPageState extends State<HangarPage> {
-  int _selected = 1;
+  final _progressionRepo = WingProgressionRepository();
+  final _wallet = TokenWalletRepository();
+  int tokens = 0;
+  Map<String, WorldWingProgress> progress = {};
+  bool loading = true;
 
-  static const planes = <(String, String, Color)>[
-    ('Classic', 'Common', FlightColors.cloudWhite),
-    ('Aegis Prime', 'Legendary', FlightColors.skyBlue),
-    ('Cloud Glider', 'Epic', FlightColors.violet),
-    ('Phoenix Fold', 'Legendary', FlightColors.sunOrange),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    setState(() => loading = true);
+    final balance = await _wallet.balance();
+    final entries = await Future.wait(raceWorlds.map((w) => _progressionRepo.load(w.id)));
+    if (!mounted) return;
+    setState(() {
+      tokens = balance;
+      progress = {for (final p in entries) p.worldId: p};
+      loading = false;
+    });
+  }
+
+  Future<void> _upgrade(String worldId) async {
+    final result = await _progressionRepo.upgrade(worldId);
+    if (!mounted) return;
+    if (!result.success) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(result.reason ?? 'Upgrade failed')));
+    }
+    await _load();
+  }
+
+  void _race(RaceWorld world, {required bool boss}) {
+    context.push('/character-select', extra: CharacterSelectLaunch(CharacterSelectMode.rival, worldId: world.id, bossRace: boss));
+  }
 
   @override
   Widget build(BuildContext context) {
-    final plane = planes[_selected];
-    return SafeArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(20, 30, 20, 120),
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1180),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text('HANGAR', style: Theme.of(context).textTheme.headlineLarge),
-              const SizedBox(height: 6),
-              Text('Your plane is a workspace, not a settings list. Tune identity and performance in one place.', style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: FlightColors.muted)),
-              const SizedBox(height: 18),
-              GlassSurface(
-                highlight: true,
-                child: LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints constraints) {
-                    final wide = constraints.maxWidth >= 760;
-                    final visual = Container(
-                      constraints: const BoxConstraints(minHeight: 280),
-                      decoration: BoxDecoration(
-                        gradient: RadialGradient(
-                          colors: <Color>[plane.$3.withValues(alpha: .25), Colors.transparent],
-                        ),
-                      ),
-                      child: Center(
-                        child: AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 360),
-                          switchInCurve: Curves.easeOutCubic,
-                          child: PaperPlaneMark(key: ValueKey<int>(_selected), size: wide ? 220 : 170),
-                        ),
-                      ),
-                    );
-                    final stats = Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(plane.$1, style: Theme.of(context).textTheme.headlineLarge),
-                        Text(plane.$2.toUpperCase(), style: Theme.of(context).textTheme.labelLarge?.copyWith(color: plane.$3, letterSpacing: 1.3)),
-                        const SizedBox(height: 18),
-                        _PerformanceBar(label: 'Speed', value: _selected == 1 ? .92 : .82, color: FlightColors.leafGreen),
-                        _PerformanceBar(label: 'Glide', value: .88, color: FlightColors.aeroCyan),
-                        _PerformanceBar(label: 'Control', value: .91, color: FlightColors.skyBlue),
-                        _PerformanceBar(label: 'Boost', value: .85, color: FlightColors.sunOrange),
-                        const SizedBox(height: 16),
-                        FilledButton.icon(onPressed: () => HapticFeedback.mediumImpact(), icon: const Icon(Icons.tune_rounded), label: const Text('Tune plane')),
+    return Scaffold(
+      appBar: AppBar(title: const Text('Hangar')),
+      body: loading
+          ? const Center(child: CircularProgressIndicator())
+          : RefreshIndicator(
+              onRefresh: _load,
+              child: ListView(
+                padding: const EdgeInsets.all(16),
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(color: FlightColors.panel, borderRadius: BorderRadius.circular(16), border: Border.all(color: Colors.white12)),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.toll_rounded, color: FlightColors.orange),
+                        const SizedBox(width: 10),
+                        Text('$tokens TOKENS', style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16)),
+                        const Spacer(),
+                        const Text('Earned in races', style: TextStyle(fontSize: 10, color: Color(0xFFB8CBDC))),
                       ],
-                    );
-                    return wide
-                        ? Row(children: <Widget>[Expanded(child: visual), const SizedBox(width: 26), Expanded(child: stats)])
-                        : Column(children: <Widget>[visual, stats]);
-                  },
-                ),
-              ),
-              const SizedBox(height: 16),
-              _PlanePicker(selected: _selected, onSelected: (int index) => setState(() => _selected = index)),
-              const SizedBox(height: 16),
-              const Wrap(
-                spacing: 10,
-                runSpacing: 10,
-                children: <Widget>[
-                  MorphingMetric(label: 'Speed', value: '92', unit: '/100', accent: FlightColors.leafGreen, details: <String>['Cruise 31 m/s', 'Boost peak 48 m/s', 'Acceleration +8%']),
-                  MorphingMetric(label: 'Control', value: '91', unit: '/100', accent: FlightColors.skyBlue, details: <String>['Turn response 94%', 'Wind stability 89%', 'Magnet assist 72%']),
-                  MorphingMetric(label: 'Glide', value: '88', unit: '/100', accent: FlightColors.violet, details: <String>['Lift efficiency 90%', 'Energy decay -7%', 'Stall tolerance high']),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  for (final world in raceWorlds)
+                    _WorldCard(
+                      world: world,
+                      progress: progress[world.id] ?? WorldWingProgress(worldId: world.id, wingLevel: 1, bossCleared: false),
+                      tokens: tokens,
+                      onUpgrade: () => _upgrade(world.id),
+                      onRace: () => _race(world, boss: false),
+                      onBossRace: () => _race(world, boss: true),
+                    ),
                 ],
+              ),
+            ),
+    );
+  }
+}
+
+class _WorldCard extends StatelessWidget {
+  const _WorldCard({
+    required this.world,
+    required this.progress,
+    required this.tokens,
+    required this.onUpgrade,
+    required this.onRace,
+    required this.onBossRace,
+  });
+
+  final RaceWorld world;
+  final WorldWingProgress progress;
+  final int tokens;
+  final VoidCallback onUpgrade;
+  final VoidCallback onRace;
+  final VoidCallback onBossRace;
+
+  @override
+  Widget build(BuildContext context) {
+    final maxed = progress.wingLevel >= 10;
+    final nextCost = maxed ? null : wingLevels()[progress.wingLevel].cost;
+    final canAfford = nextCost != null && tokens >= nextCost;
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(color: FlightColors.panel, borderRadius: BorderRadius.circular(16), border: Border.all(color: Colors.white12)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(child: Text(world.name, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 15))),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(color: FlightColors.cyan.withValues(alpha: .14), borderRadius: BorderRadius.circular(8)),
+                child: Text('WING ${progress.wingLevel}', style: const TextStyle(color: FlightColors.cyan, fontWeight: FontWeight.w900, fontSize: 11)),
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _PerformanceBar extends StatelessWidget {
-  const _PerformanceBar({required this.label, required this.value, required this.color});
-
-  final String label;
-  final double value;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Row(
-        children: <Widget>[
-          SizedBox(width: 72, child: Text(label)),
-          Expanded(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: LinearProgressIndicator(value: value, minHeight: 8, color: color, backgroundColor: FlightColors.nightBlue),
-            ),
-          ),
-          const SizedBox(width: 10),
-          SizedBox(width: 34, child: Text('${(value * 100).round()}')),
-        ],
-      ),
-    );
-  }
-}
-
-class _PlanePicker extends StatelessWidget {
-  const _PlanePicker({required this.selected, required this.onSelected});
-
-  final int selected;
-  final ValueChanged<int> onSelected;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 130,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: _HangarPageState.planes.length,
-        separatorBuilder: (_, _) => const SizedBox(width: 10),
-        itemBuilder: (BuildContext context, int index) {
-          final item = _HangarPageState.planes[index];
-          final active = index == selected;
-          return Semantics(
-            button: true,
-            selected: active,
-            label: '${item.$1}, ${item.$2}',
-            child: InkWell(
-              borderRadius: BorderRadius.circular(22),
-              onTap: () {
-                HapticFeedback.selectionClick();
-                onSelected(index);
-              },
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 280),
-                width: active ? 178 : 142,
-                padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(
-                  color: active ? item.$3.withValues(alpha: .14) : FlightColors.glass,
-                  borderRadius: BorderRadius.circular(22),
-                  border: Border.all(color: active ? item.$3 : const Color(0x333DB8FF)),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Icon(Icons.send_rounded, color: item.$3, size: active ? 38 : 30),
-                    const SizedBox(height: 8),
-                    Text(item.$1, maxLines: 1, overflow: TextOverflow.ellipsis),
-                    Text(item.$2, style: Theme.of(context).textTheme.bodyMedium),
-                  ],
+          const SizedBox(height: 4),
+          Text('${world.bossName} — ${world.bossTitle}', style: const TextStyle(fontSize: 11, color: Color(0xFFB8CBDC))),
+          Text(world.weather, style: const TextStyle(fontSize: 9.5, color: Color(0xFF7E9AB2))),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: maxed ? null : (canAfford ? onUpgrade : null),
+                  child: Text(maxed ? 'MAX WING' : 'UPGRADE • ${nextCost ?? 0}', textAlign: TextAlign.center),
                 ),
               ),
-            ),
-          );
-        },
+              const SizedBox(width: 8),
+              Expanded(
+                child: FilledButton(
+                  onPressed: progress.bossUnlocked ? onBossRace : onRace,
+                  style: progress.bossUnlocked ? FilledButton.styleFrom(backgroundColor: FlightColors.red) : null,
+                  child: Text(progress.bossUnlocked ? 'CHALLENGE BOSS' : 'RACE'),
+                ),
+              ),
+            ],
+          ),
+          if (progress.bossCleared) const Padding(
+            padding: EdgeInsets.only(top: 8),
+            child: Text('BOSS CLEARED', style: TextStyle(fontSize: 9, color: FlightColors.green, fontWeight: FontWeight.w900)),
+          ),
+        ],
       ),
     );
   }
