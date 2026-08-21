@@ -110,6 +110,7 @@ class MorphingNavigationIsland extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       container: true,
+      explicitChildNodes: true,
       label: 'Primary navigation',
       child: ClipRRect(
         borderRadius: BorderRadius.circular(34),
@@ -155,6 +156,8 @@ class _MorphingDestination extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Semantics(
+      container: true,
+      excludeSemantics: true,
       button: true,
       selected: selected,
       label: destination.label,
@@ -171,7 +174,7 @@ class _MorphingDestination extends StatelessWidget {
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeOutCubic,
-              padding: EdgeInsets.symmetric(horizontal: selected ? 12 : 8),
+              padding: EdgeInsets.symmetric(horizontal: selected ? 10 : 6),
               decoration: BoxDecoration(
                 color: selected ? FlightColors.skyBlue.withValues(alpha: .18) : Colors.transparent,
                 borderRadius: BorderRadius.circular(28),
@@ -185,18 +188,20 @@ class _MorphingDestination extends StatelessWidget {
                   Icon(
                     selected ? destination.selectedIcon : destination.icon,
                     color: selected ? FlightColors.aeroCyan : FlightColors.muted,
-                    size: 23,
+                    size: 22,
                   ),
-                  AnimatedSize(
-                    duration: const Duration(milliseconds: 260),
-                    curve: Curves.easeOutCubic,
-                    child: selected
-                        ? Padding(
-                            padding: const EdgeInsets.only(left: 7),
-                            child: Text(destination.label, maxLines: 1),
-                          )
-                        : const SizedBox.shrink(),
-                  ),
+                  if (selected)
+                    Flexible(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 6),
+                        child: Text(
+                          destination.label,
+                          maxLines: 1,
+                          softWrap: false,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
