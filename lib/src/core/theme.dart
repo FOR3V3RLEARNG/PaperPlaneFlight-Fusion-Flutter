@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:flutter/cupertino.dart' show CupertinoPageTransitionsBuilder;
 import 'package:flutter/material.dart';
 
 abstract final class FlightColors {
