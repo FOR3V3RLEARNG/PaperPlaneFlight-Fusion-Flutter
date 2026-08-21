@@ -22,10 +22,10 @@ final appRouterProvider = Provider<GoRouter>((_) {
           return AdaptiveShell(location: state.uri.path, child: child);
         },
         routes: <RouteBase>[
-          GoRoute(path: '/home', builder: (_, _) => const HomePage()),
+          GoRoute(path: '/home', builder: (_, __) => const HomePage()),
           GoRoute(
             path: '/map',
-            builder: (_, _) => const WorldMapPage(),
+            builder: (_, __) => const WorldMapPage(),
             routes: <RouteBase>[
               GoRoute(
                 path: 'level/:levelId',
@@ -39,9 +39,9 @@ final appRouterProvider = Provider<GoRouter>((_) {
               ),
             ],
           ),
-          GoRoute(path: '/hangar', builder: (_, _) => const HangarPage()),
-          GoRoute(path: '/missions', builder: (_, _) => const MissionsPage()),
-          GoRoute(path: '/profile', builder: (_, _) => const ProfilePage()),
+          GoRoute(path: '/hangar', builder: (_, __) => const HangarPage()),
+          GoRoute(path: '/missions', builder: (_, __) => const MissionsPage()),
+          GoRoute(path: '/profile', builder: (_, __) => const ProfilePage()),
         ],
       ),
       GoRoute(

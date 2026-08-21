@@ -1,3 +1,4 @@
+import 'dart:ui';
 
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
@@ -109,8 +110,8 @@ ThemeData buildFlightTheme() {
     pageTransitionsTheme: const PageTransitionsTheme(
       builders: <TargetPlatform, PageTransitionsBuilder>{
         TargetPlatform.android: ZoomPageTransitionsBuilder(),
-        TargetPlatform.iOS: ZoomPageTransitionsBuilder(),
-        TargetPlatform.macOS: ZoomPageTransitionsBuilder(),
+        TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+        TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
         TargetPlatform.windows: ZoomPageTransitionsBuilder(),
         TargetPlatform.linux: ZoomPageTransitionsBuilder(),
       },

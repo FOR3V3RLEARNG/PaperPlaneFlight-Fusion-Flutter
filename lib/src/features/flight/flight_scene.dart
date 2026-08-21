@@ -288,12 +288,7 @@ class _FlightScenePainter extends CustomPainter {
         ..shader = ui.Gradient.linear(
           Offset(-s, -s),
           Offset(s, s),
-          const <Color>[
-            Colors.white,
-            Color(0xFFE6F3FF),
-            FlightColors.violet,
-          ],
-          const <double>[0, .62, 1],
+          const <Color>[Colors.white, Color(0xFFE6F3FF), FlightColors.violet],
         ),
     );
     final fold = Path()

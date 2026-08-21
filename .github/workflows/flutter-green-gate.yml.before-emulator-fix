@@ -30,6 +30,9 @@ jobs:
           if [ ! -d android ]; then
             flutter create --platforms=android --project-name=paper_plane_flight .
           fi
+          if grep -q 'MyApp' test/widget_test.dart 2>/dev/null; then
+            rm test/widget_test.dart
+          fi
       - run: flutter doctor -v
       - run: flutter pub get
       - name: Dependency visibility
@@ -58,6 +61,9 @@ jobs:
         run: |
           if [ ! -d android ]; then
             flutter create --platforms=android --project-name=paper_plane_flight .
+          fi
+          if grep -q 'MyApp' test/widget_test.dart 2>/dev/null; then
+            rm test/widget_test.dart
           fi
       - run: flutter pub get
       - run: flutter analyze --fatal-warnings
