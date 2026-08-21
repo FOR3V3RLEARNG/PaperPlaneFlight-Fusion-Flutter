@@ -18,54 +18,123 @@ jobs:
       matrix:
         flutter: ['3.47.0', '3.44.7']
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+
     steps:
       - uses: actions/checkout@v6
+
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ matrix.flutter }}
           channel: stable
           cache: true
-      - name: Scaffold platform folders when source-only
-        run: |
-          if [ ! -d android ]; then
-            flutter create --platforms=android --project-name=paper_plane_flight .
-          fi
-      - run: flutter doctor -v
-      - run: flutter pub get
-      - name: Dependency visibility
-        run: dart pub outdated || true
-      - name: Parse and format pass
-        run: dart format --output=none lib test integration_test
-      - name: Analyze
-        run: flutter analyze --fatal-warnings
-      - name: Unit and widget tests
-        run: flutter test --coverage
-      - name: Integration smoke tests
-        run: flutter test integration_test
 
-  release-android:
-    name: Release APK + AAB
-    needs: certify
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.47.0'
-          channel: stable
-          cache: true
       - name: Scaffold Android when source-only
         run: |
           if [ ! -d android ]; then
             flutter create --platforms=android --project-name=paper_plane_flight .
           fi
+
+      - run: flutter doctor -v
+      - run: flutter pub get
+
+      - name: Dependency visibility
+        run: dart pub outdated || true
+
+      - name: Parse and format pass
+        run: dart format --output=none lib test integration_test
+
+      - name: Analyze
+        run: flutter analyze --fatal-warnings
+
+      - name: Unit and widget tests
+        run: flutter test --coverage
+
+  android-integration:
+    name: Android integration smoke
+    needs: certify
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.0'
+          channel: stable
+          cache: true
+
+      - name: Scaffold Android when source-only
+        run: |
+          if [ ! -d android ]; then
+            flutter create --platforms=android --project-name=paper_plane_flight .
+          fi
+
+      - run: flutter pub get
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm || true
+          sudo chmod 666 /dev/kvm || true
+
+      - name: Run Android integration journey
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          emulator-boot-timeout: 600
+          emulator-options: >-
+            -no-window
+            -gpu swiftshader_indirect
+            -no-snapshot
+            -noaudio
+            -no-boot-anim
+          script: |
+            adb devices
+            flutter devices
+            flutter test integration_test/navigation_flow_test.dart -d emulator-5554
+
+  release-android:
+    name: Release APK + AAB
+    needs: [certify, android-integration]
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.0'
+          channel: stable
+          cache: true
+
+      - name: Scaffold Android when source-only
+        run: |
+          if [ ! -d android ]; then
+            flutter create --platforms=android --project-name=paper_plane_flight .
+          fi
+
       - run: flutter pub get
       - run: flutter analyze --fatal-warnings
       - run: flutter test
       - run: flutter build apk --release
       - run: flutter build appbundle --release
-      - run: test -f build/app/outputs/flutter-apk/app-release.apk
-      - run: test -f build/app/outputs/bundle/release/app-release.aab
+
+      - name: Verify release artifacts
+        run: |
+          test -s build/app/outputs/flutter-apk/app-release.apk
+          test -s build/app/outputs/bundle/release/app-release.aab
+          ls -lh build/app/outputs/flutter-apk/app-release.apk
+          ls -lh build/app/outputs/bundle/release/app-release.aab
+
       - uses: actions/upload-artifact@v4
         with:
           name: paper-plane-flight-android
@@ -73,3 +142,4 @@ jobs:
             build/app/outputs/flutter-apk/app-release.apk
             build/app/outputs/bundle/release/app-release.aab
           if-no-files-found: error
+          retention-days: 14
