@@ -111,11 +111,7 @@ jobs:
           script: |
             adb devices
             flutter devices
-            flutter drive \
-              --driver=test_driver/integration_test.dart \
-              --target=integration_test/app_smoke_test.dart \
-              -d emulator-5554 \
-              --no-dds
+            flutter drive --driver=test_driver/integration_test.dart --target=integration_test/app_smoke_test.dart -d emulator-5554 --no-dds
 
   release-android:
     name: Release APK + AAB
