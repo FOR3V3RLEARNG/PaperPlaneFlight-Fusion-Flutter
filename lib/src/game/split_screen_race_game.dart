@@ -89,6 +89,7 @@ class SplitScreenRaceGame extends FlameGame {
   int p1Score = 0;
   int p2Score = 0;
   bool done = false;
+  int? raceWinner;
   String p1Banner = 'READY';
   String p2Banner = 'READY';
   double p1BannerTimer = 1.5;
@@ -209,7 +210,7 @@ class SplitScreenRaceGame extends FlameGame {
       p1Banner: p1BannerTimer > 0 ? p1Banner : '',
       p2Banner: p2BannerTimer > 0 ? p2Banner : '',
       finished: done,
-      winner: done ? (p1Progress >= p2Progress ? 1 : 2) : null,
+      winner: done ? raceWinner : null,
     );
   }
 
@@ -265,7 +266,8 @@ class SplitScreenRaceGame extends FlameGame {
         _banner(lane, 'DEBRIS HIT');
         break;
       }
-      if (distance < 54 && debris.y > racer.y) {
+      if (distance < 54 && debris.y > racer.y && !debris.nearMissAwarded) {
+        debris.nearMissAwarded = true;
         _banner(lane, 'CLOSE CALL +45');
         if (lane == 1) {
           p1Score += 45;
@@ -338,6 +340,7 @@ class SplitScreenRaceGame extends FlameGame {
   void _finish(int winner, {required String reason}) {
     if (done) return;
     done = true;
+    raceWinner = winner;
     final winnerPlane = winner == 1 ? playerOne : playerTwo;
     final loserPlane = winner == 1 ? playerTwo : playerOne;
     winnerPlane.react(PilotMood.celebrating);

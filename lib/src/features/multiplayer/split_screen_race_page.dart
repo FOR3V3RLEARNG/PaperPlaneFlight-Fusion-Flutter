@@ -90,8 +90,8 @@ class _SplitScreenRacePageState extends State<SplitScreenRacePage> {
           GameWidget<SplitScreenRaceGame>(game: game),
           Row(
             children: [
-              Expanded(child: _TouchZone(player: 1, onInput: _inputOne, onClear: () => game.clearInput(1))),
-              Expanded(child: _TouchZone(player: 2, onInput: _inputTwo, onClear: () => game.clearInput(2))),
+              Expanded(child: _TouchZone(player: 1, onInput: _inputOne, onClear: _clearOne)),
+              Expanded(child: _TouchZone(player: 2, onInput: _inputTwo, onClear: _clearTwo)),
             ],
           ),
           SafeArea(child: _SplitHud(game: game, onExit: _exitRace)),
@@ -114,6 +114,16 @@ class _SplitScreenRacePageState extends State<SplitScreenRacePage> {
       (velocityTwo.dy * .48 + details.delta.dy * .52).clamp(-7, 7).toDouble(),
     );
     game.setInput(2, velocityTwo.dx / 5.0, velocityTwo.dy / 5.0);
+  }
+
+  void _clearOne() {
+    velocityOne = Offset.zero;
+    game.clearInput(1);
+  }
+
+  void _clearTwo() {
+    velocityTwo = Offset.zero;
+    game.clearInput(2);
   }
 
   Future<void> _exitRace() async {

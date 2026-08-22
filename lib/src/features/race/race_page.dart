@@ -77,7 +77,10 @@ class _RacePageState extends State<RacePage> {
               velocity = Offset.zero;
               game.clearInput();
             },
-            onPanCancel: game.clearInput,
+            onPanCancel: () {
+              velocity = Offset.zero;
+              game.clearInput();
+            },
             child: GameWidget<RivalRaceGame>(game: game),
           ),
           SafeArea(child: _RaceHud(game: game, launch: widget.launch)),
