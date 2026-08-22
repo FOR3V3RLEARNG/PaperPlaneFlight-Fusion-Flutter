@@ -101,12 +101,13 @@ class RacerPlaneComponent extends PositionComponent {
           ..strokeWidth = 2,
       );
     }
-    if (tier >= 4)
+    if (tier >= 4) {
       canvas.drawCircle(
         Offset(size.x * .54, size.y * .48),
         4,
         Paint()..color = tierAccent,
       );
+    }
     if (tier >= 5) {
       canvas.drawLine(
         Offset(size.x * .18, size.y * .69),
@@ -135,7 +136,7 @@ class RacerPlaneComponent extends PositionComponent {
           ..strokeCap = StrokeCap.round,
       );
     }
-    if (integrity < 55)
+    if (integrity < 55) {
       canvas.drawLine(
         const Offset(18, 24),
         const Offset(29, 36),
@@ -143,5 +144,6 @@ class RacerPlaneComponent extends PositionComponent {
           ..color = const Color(0xFF55382F)
           ..strokeWidth = 2,
       );
+    }
   }
 }
