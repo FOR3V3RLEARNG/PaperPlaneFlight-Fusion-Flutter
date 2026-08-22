@@ -1,5 +1,4 @@
 import 'dart:math' as math;
-import 'dart:ui';
 
 import 'package:flame/components.dart';
 import 'package:flutter/painting.dart';
@@ -99,6 +98,6 @@ class RacerPlaneComponent extends PositionComponent {
           ..strokeCap = StrokeCap.round,
       );
     }
-    if (integrity < 55) canvas.drawLine(Offset(18, 24), Offset(29, 36), Paint()..color = const Color(0xFF55382F)..strokeWidth = 2);
+    if (integrity < 55) canvas.drawLine(const Offset(18, 24), const Offset(29, 36), Paint()..color = const Color(0xFF55382F)..strokeWidth = 2);
   }
 }

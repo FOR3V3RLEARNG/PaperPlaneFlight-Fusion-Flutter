@@ -13,9 +13,9 @@ import 'features/results/race_results_page.dart';
 import 'game/models/race_models.dart';
 
 final _router = GoRouter(routes: [
-  GoRoute(path: '/', builder: (_, __) => const HomePage()),
-  GoRoute(path: '/multiplayer', builder: (_, __) => const MultiplayerModePage()),
-  GoRoute(path: '/hangar', builder: (_, __) => const HangarPage()),
+  GoRoute(path: '/', builder: (_, _) => const HomePage()),
+  GoRoute(path: '/multiplayer', builder: (_, _) => const MultiplayerModePage()),
+  GoRoute(path: '/hangar', builder: (_, _) => const HangarPage()),
   GoRoute(
     path: '/character-select',
     builder: (_, state) {

@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:paper_plane_flight/src/game/systems/token_wallet.dart';
 import 'package:paper_plane_flight/src/game/systems/wing_progression.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   setUp(() {

@@ -1,6 +1,4 @@
 import 'dart:math' as math;
-import 'dart:ui';
-import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
@@ -51,6 +49,6 @@ class RivalRaceGame extends FlameGame {
   void showBanner(String s){bannerTimer=1.5;hud.value=RaceHudState(progress:playerProgress,position:playerProgress>=rivalProgress?RacePosition.first:RacePosition.second,gap:(playerProgress-rivalProgress).abs(),integrity:player.integrity,rivalIntegrity:rival.integrity,tokens:tokens,score:score,wingLevel:wingLevel,powerCharges:powers.fold(0,(a,b)=>a+b.charges),banner:s);}
   void updateHud(){final pos=playerProgress>=rivalProgress?RacePosition.first:RacePosition.second;if(pos==RacePosition.first&&hud.value.position==RacePosition.second){player.react(PilotMood.fistPump);showBanner('OVERTAKE!');}hud.value=RaceHudState(progress:playerProgress,position:pos,gap:(playerProgress-rivalProgress).abs(),integrity:player.integrity,rivalIntegrity:rival.integrity,tokens:tokens,score:score,wingLevel:wingLevel,powerCharges:powers.fold(0,(a,b)=>a+b.charges),banner:bannerTimer>0?hud.value.banner:'');}
   void finishRace(){if(done)return;done=true;final win=playerProgress>=rivalProgress;player.react(win?PilotMood.celebrating:PilotMood.frustrated);rival.react(win?PilotMood.frustrated:PilotMood.celebrating);pauseEngine();Future<void>.delayed(const Duration(milliseconds:650),()=>onFinished(RaceResult(playerWon:win,playerTime:elapsed,rivalTime:elapsed+(win ? .35 : -.35),score:score+(win?800:200),tokens:tokens,worldId:worldId,bossRace:bossRace)));}
-  @override void render(Canvas c){final rect=Offset.zero&Size(size.x,size.y);c.drawRect(rect,Paint()..shader=const LinearGradient(begin:Alignment.topCenter,end:Alignment.bottomCenter,colors:[Color(0xFF07549A),Color(0xFF45B9E4),Color(0xFFC5F5FF)]).createShader(rect));for(var i=0;i<8;i++){final y=((elapsed*80+i*150)% (size.y+180))-100;c.drawCircle(Offset((i*93)%math.max(1,size.x.toInt()).toDouble(),y),55+(i%3)*20,Paint()..color=const Color(0xFFFFFFFF).withValues(alpha:.08));}super.render(c);}
+  @override void render(Canvas canvas){final rect=Offset.zero&Size(size.x,size.y);canvas.drawRect(rect,Paint()..shader=const LinearGradient(begin:Alignment.topCenter,end:Alignment.bottomCenter,colors:[Color(0xFF07549A),Color(0xFF45B9E4),Color(0xFFC5F5FF)]).createShader(rect));for(var i=0;i<8;i++){final y=((elapsed*80+i*150)% (size.y+180))-100;canvas.drawCircle(Offset((i*93)%math.max(1,size.x.toInt()).toDouble(),y),55+(i%3)*20,Paint()..color=const Color(0xFFFFFFFF).withValues(alpha:.08));}super.render(canvas);}
   @override void onDispose(){hud.dispose();super.onDispose();}
 }

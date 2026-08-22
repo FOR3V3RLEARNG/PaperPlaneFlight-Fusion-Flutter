@@ -81,7 +81,7 @@ class _CharacterSelectPageState extends State<CharacterSelectPage> {
             _RosterGrid(selectedId: playerTwo, onSelected: (id) => setState(() => playerTwo = id)),
             const SizedBox(height: 16),
             if (widget.mode == CharacterSelectMode.rival && widget.bossRace)
-              _WingReadout(label: 'RIVAL WING (BOSS)', value: 10, loading: false)
+              const _WingReadout(label: 'RIVAL WING (BOSS)', value: 10, loading: false)
             else
               _WingPicker(label: widget.mode == CharacterSelectMode.rival ? 'RIVAL WING' : 'P2 WING LEVEL', value: wingTwo, onChanged: (v) => setState(() => wingTwo = v)),
           ],
