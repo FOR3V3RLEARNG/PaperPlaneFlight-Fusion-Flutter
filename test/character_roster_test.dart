@@ -3,8 +3,22 @@ import 'package:paper_plane_flight/src/data/pilot_characters.dart';
 
 void main() {
   test('default roster contains requested playable original pilots', () {
-    final playable = pilotCharacters.where((p) => p.availableByDefault).map((p) => p.id).toSet();
-    expect(playable, containsAll({'yaalon', 'uzziah', 'nails', 'wild_brats', 'granny', 'george_monkey', 'rose_panther'}));
+    final playable = pilotCharacters
+        .where((p) => p.availableByDefault)
+        .map((p) => p.id)
+        .toSet();
+    expect(
+      playable,
+      containsAll({
+        'yaalon',
+        'uzziah',
+        'nails',
+        'wild_brats',
+        'granny',
+        'george_monkey',
+        'rose_panther',
+      }),
+    );
   });
 
   test('exact Pink Panther slot remains license gated', () {

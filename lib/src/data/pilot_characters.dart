@@ -44,7 +44,8 @@ const pilotCharacters = <PilotCharacterDefinition>[
     secondary: Color(0xFF1D72FF),
     skin: Color(0xFFB96F45),
     hair: Color(0xFF121820),
-    personality: 'Fearless, curious and first to fist-pump through a rainbow gate.',
+    personality:
+        'Fearless, curious and first to fist-pump through a rainbow gate.',
     signaturePower: RacePowerType.distortionPulse,
   ),
   PilotCharacterDefinition(
@@ -56,7 +57,8 @@ const pilotCharacters = <PilotCharacterDefinition>[
     secondary: Color(0xFFFFC14D),
     skin: Color(0xFF8F5438),
     hair: Color(0xFF1B1110),
-    personality: 'Calm under pressure, then explosive when the final sprint begins.',
+    personality:
+        'Calm under pressure, then explosive when the final sprint begins.',
     signaturePower: RacePowerType.slowWindField,
   ),
   PilotCharacterDefinition(
@@ -68,7 +70,8 @@ const pilotCharacters = <PilotCharacterDefinition>[
     secondary: Color(0xFFFF7043),
     skin: Color(0xFF9B654B),
     hair: Color(0xFF1A1A1A),
-    personality: 'Tough, daring and happiest skimming debris at impossible angles.',
+    personality:
+        'Tough, daring and happiest skimming debris at impossible angles.',
     signaturePower: RacePowerType.fireBurst,
   ),
   PilotCharacterDefinition(
@@ -80,7 +83,8 @@ const pilotCharacters = <PilotCharacterDefinition>[
     secondary: Color(0xFFFFB347),
     skin: Color(0xFFBA784E),
     hair: Color(0xFF3A231B),
-    personality: 'A noisy two-kid cockpit crew that laughs louder as the weather gets worse.',
+    personality:
+        'A noisy two-kid cockpit crew that laughs louder as the weather gets worse.',
     signaturePower: RacePowerType.distortionPulse,
   ),
   PilotCharacterDefinition(
@@ -92,7 +96,8 @@ const pilotCharacters = <PilotCharacterDefinition>[
     secondary: Color(0xFF55C7D9),
     skin: Color(0xFFC58A68),
     hair: Color(0xFFE7E7E7),
-    personality: 'Looks relaxed, reads the wind perfectly and laughs when younger racers panic.',
+    personality:
+        'Looks relaxed, reads the wind perfectly and laughs when younger racers panic.',
     signaturePower: RacePowerType.slowWindField,
   ),
   PilotCharacterDefinition(
@@ -104,7 +109,8 @@ const pilotCharacters = <PilotCharacterDefinition>[
     secondary: Color(0xFF00CFEA),
     skin: Color(0xFFC8895C),
     hair: Color(0xFF5A3527),
-    personality: 'An original mischievous sky monkey who ducks, grins and grabs every risky boost.',
+    personality:
+        'An original mischievous sky monkey who ducks, grins and grabs every risky boost.',
     signaturePower: RacePowerType.fireBurst,
   ),
   PilotCharacterDefinition(
@@ -116,7 +122,8 @@ const pilotCharacters = <PilotCharacterDefinition>[
     secondary: Color(0xFF8E6CFF),
     skin: Color(0xFFFFA6CC),
     hair: Color(0xFFFF79B5),
-    personality: 'A sleek original pink-cat racer built for graceful overtakes and distortion tricks.',
+    personality:
+        'A sleek original pink-cat racer built for graceful overtakes and distortion tricks.',
     signaturePower: RacePowerType.distortionPulse,
   ),
   PilotCharacterDefinition(
@@ -131,11 +138,12 @@ const pilotCharacters = <PilotCharacterDefinition>[
     personality: 'Reserved integration slot for the exact licensed character.',
     signaturePower: RacePowerType.distortionPulse,
     availableByDefault: false,
-    licenseNote: 'Requires permission/licensing from the rights holder before commercial distribution.',
+    licenseNote:
+        'Requires permission/licensing from the rights holder before commercial distribution.',
   ),
 ];
 
 PilotCharacterDefinition pilotById(String id) => pilotCharacters.firstWhere(
-      (pilot) => pilot.id == id,
-      orElse: () => pilotCharacters.first,
-    );
+  (pilot) => pilot.id == id,
+  orElse: () => pilotCharacters.first,
+);

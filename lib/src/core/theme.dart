@@ -24,9 +24,21 @@ ThemeData flightTheme() => ThemeData(
     error: FlightColors.red,
   ),
   textTheme: const TextTheme(
-    displaySmall: TextStyle(fontSize: 34, fontWeight: FontWeight.w900, color: FlightColors.white),
-    headlineSmall: TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: FlightColors.white),
-    titleMedium: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: FlightColors.white),
+    displaySmall: TextStyle(
+      fontSize: 34,
+      fontWeight: FontWeight.w900,
+      color: FlightColors.white,
+    ),
+    headlineSmall: TextStyle(
+      fontSize: 22,
+      fontWeight: FontWeight.w900,
+      color: FlightColors.white,
+    ),
+    titleMedium: TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.w800,
+      color: FlightColors.white,
+    ),
     bodyMedium: TextStyle(fontSize: 12, height: 1.45, color: Color(0xFFC7D9EA)),
   ),
 );

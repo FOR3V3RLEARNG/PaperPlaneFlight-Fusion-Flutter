@@ -55,8 +55,20 @@ class RacerPlaneComponent extends PositionComponent {
   @override
   void render(Canvas canvas) {
     super.render(canvas);
-    final tier = wingLevel <= 2 ? 0 : wingLevel <= 4 ? 1 : wingLevel <= 6 ? 2 : wingLevel <= 8 ? 3 : wingLevel == 9 ? 4 : 5;
-    final main = playerControlled ? const Color(0xFFF7FBFF) : const Color(0xFFF2F4FF);
+    final tier = wingLevel <= 2
+        ? 0
+        : wingLevel <= 4
+        ? 1
+        : wingLevel <= 6
+        ? 2
+        : wingLevel <= 8
+        ? 3
+        : wingLevel == 9
+        ? 4
+        : 5;
+    final main = playerControlled
+        ? const Color(0xFFF7FBFF)
+        : const Color(0xFFF2F4FF);
     final tierAccent = [
       character.primary,
       character.secondary,
@@ -81,23 +93,55 @@ class RacerPlaneComponent extends PositionComponent {
     canvas.drawPath(fold, Paint()..color = tierAccent.withValues(alpha: .76));
 
     if (tier >= 2) {
-      canvas.drawLine(Offset(9, size.y * .65), Offset(size.x * .38, size.y * .54), Paint()..color = tierAccent..strokeWidth = 2);
+      canvas.drawLine(
+        Offset(9, size.y * .65),
+        Offset(size.x * .38, size.y * .54),
+        Paint()
+          ..color = tierAccent
+          ..strokeWidth = 2,
+      );
     }
-    if (tier >= 4) canvas.drawCircle(Offset(size.x * .54, size.y * .48), 4, Paint()..color = tierAccent);
+    if (tier >= 4)
+      canvas.drawCircle(
+        Offset(size.x * .54, size.y * .48),
+        4,
+        Paint()..color = tierAccent,
+      );
     if (tier >= 5) {
-      canvas.drawLine(Offset(size.x * .18, size.y * .69), Offset(size.x * .04, size.y * .85), Paint()..color = character.secondary.withValues(alpha: .85)..strokeWidth = 2.4);
-      canvas.drawLine(Offset(size.x * .58, size.y * .72), Offset(size.x * .71, size.y * .88), Paint()..color = character.secondary.withValues(alpha: .85)..strokeWidth = 2.4);
+      canvas.drawLine(
+        Offset(size.x * .18, size.y * .69),
+        Offset(size.x * .04, size.y * .85),
+        Paint()
+          ..color = character.secondary.withValues(alpha: .85)
+          ..strokeWidth = 2.4,
+      );
+      canvas.drawLine(
+        Offset(size.x * .58, size.y * .72),
+        Offset(size.x * .71, size.y * .88),
+        Paint()
+          ..color = character.secondary.withValues(alpha: .85)
+          ..strokeWidth = 2.4,
+      );
     }
     if (boost > 0) {
       canvas.drawLine(
         Offset(7, size.y * .55),
         Offset(-18, size.y * .62),
         Paint()
-          ..shader = LinearGradient(colors: [tierAccent, const Color(0x0000E5FF)]).createShader(const Rect.fromLTWH(-20, 0, 30, 50))
+          ..shader = LinearGradient(
+            colors: [tierAccent, const Color(0x0000E5FF)],
+          ).createShader(const Rect.fromLTWH(-20, 0, 30, 50))
           ..strokeWidth = 7
           ..strokeCap = StrokeCap.round,
       );
     }
-    if (integrity < 55) canvas.drawLine(const Offset(18, 24), const Offset(29, 36), Paint()..color = const Color(0xFF55382F)..strokeWidth = 2);
+    if (integrity < 55)
+      canvas.drawLine(
+        const Offset(18, 24),
+        const Offset(29, 36),
+        Paint()
+          ..color = const Color(0xFF55382F)
+          ..strokeWidth = 2,
+      );
   }
 }

@@ -59,7 +59,9 @@ class SplitScreenRaceGame extends FlameGame {
   late RacerPlaneComponent playerTwo;
   final inputOne = Vector2.zero();
   final inputTwo = Vector2.zero();
-  late final math.Random rng = math.Random(worldId.hashCode + playerOneWing * 31 + playerTwoWing * 17);
+  late final math.Random rng = math.Random(
+    worldId.hashCode + playerOneWing * 31 + playerTwoWing * 17,
+  );
 
   final ValueNotifier<SplitRaceHudState> hud = ValueNotifier(
     const SplitRaceHudState(
@@ -170,8 +172,16 @@ class SplitScreenRaceGame extends FlameGame {
       wing: playerTwoWing,
     );
 
-    final p1Speed = .0110 * (1 + (playerOneWing - 1) * .018) * (p1Slow > 0 ? .68 : 1) * (p1Boost > 0 ? 1.34 : 1);
-    final p2Speed = .0110 * (1 + (playerTwoWing - 1) * .018) * (p2Slow > 0 ? .68 : 1) * (p2Boost > 0 ? 1.34 : 1);
+    final p1Speed =
+        .0110 *
+        (1 + (playerOneWing - 1) * .018) *
+        (p1Slow > 0 ? .68 : 1) *
+        (p1Boost > 0 ? 1.34 : 1);
+    final p2Speed =
+        .0110 *
+        (1 + (playerTwoWing - 1) * .018) *
+        (p2Slow > 0 ? .68 : 1) *
+        (p2Boost > 0 ? 1.34 : 1);
     p1Progress = (p1Progress + p1Speed * dt).clamp(0, 1).toDouble();
     p2Progress = (p2Progress + p2Speed * dt).clamp(0, 1).toDouble();
 
@@ -225,14 +235,18 @@ class SplitScreenRaceGame extends FlameGame {
   }) {
     final control = 1 + (wing - 1) * .022;
     final ix = distorted ? -rawInput.x * .82 : rawInput.x;
-    final iy = distorted ? rawInput.y * .55 + math.sin(elapsed * 7) * .35 : rawInput.y;
+    final iy = distorted
+        ? rawInput.y * .55 + math.sin(elapsed * 7) * .35
+        : rawInput.y;
     racer.velocity.x += ix * 700 * control * dt;
     racer.velocity.y += iy * 520 * control * dt;
     racer.velocity.scale(math.max(0, 1 - dt * 4.6).toDouble());
     racer.position += racer.velocity * dt;
     racer.x = racer.x.clamp(laneMin, laneMax).toDouble();
     racer.y = racer.y.clamp(size.y * .20, size.y * .86).toDouble();
-    racer.angle += (racer.velocity.x / 180 * .48 - racer.angle) * math.min(1, dt * 7).toDouble();
+    racer.angle +=
+        (racer.velocity.x / 180 * .48 - racer.angle) *
+        math.min(1, dt * 7).toDouble();
   }
 
   void _spawnLaneDebris(int lane) {
@@ -241,11 +255,14 @@ class SplitScreenRaceGame extends FlameGame {
     final kinds = worldId == 'cosmic'
         ? ['asteroid', 'asteroid', 'scrap']
         : worldId == 'sky_islands'
-            ? ['leaf', 'kite', 'scrap']
-            : ['kite', 'scrap', 'leaf', 'asteroid'];
+        ? ['leaf', 'kite', 'scrap']
+        : ['kite', 'scrap', 'leaf', 'asteroid'];
     add(
       DebrisComponent(
-        position: Vector2(minX + rng.nextDouble() * math.max(1, maxX - minX), -30),
+        position: Vector2(
+          minX + rng.nextDouble() * math.max(1, maxX - minX),
+          -30,
+        ),
         kind: kinds[rng.nextInt(kinds.length)],
         drift: 14 + rng.nextDouble() * 32,
       ),
@@ -357,7 +374,10 @@ class SplitScreenRaceGame extends FlameGame {
       worldId: worldId,
       bossRace: false,
     );
-    Future<void>.delayed(const Duration(milliseconds: 700), () => onFinished(winner, result));
+    Future<void>.delayed(
+      const Duration(milliseconds: 700),
+      () => onFinished(winner, result),
+    );
   }
 
   @override

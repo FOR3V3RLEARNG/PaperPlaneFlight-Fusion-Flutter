@@ -10,7 +10,6 @@ import '../../game/models/race_models.dart';
 import '../../game/split_screen_race_game.dart';
 import '../results/race_results_page.dart';
 
-
 class SplitRaceLaunch {
   const SplitRaceLaunch({
     this.playerOneName = 'YAALON',
@@ -67,12 +66,17 @@ class _SplitScreenRacePageState extends State<SplitScreenRacePage> {
     if (!mounted) return;
     await _restorePortrait();
     if (!mounted) return;
-    context.go('/split-results', extra: SplitResultPayload(winner: winner, result: result));
+    context.go(
+      '/split-results',
+      extra: SplitResultPayload(winner: winner, result: result),
+    );
   }
 
   Future<void> _restorePortrait() async {
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    await SystemChrome.setPreferredOrientations(const [DeviceOrientation.portraitUp]);
+    await SystemChrome.setPreferredOrientations(const [
+      DeviceOrientation.portraitUp,
+    ]);
   }
 
   @override
@@ -90,11 +94,25 @@ class _SplitScreenRacePageState extends State<SplitScreenRacePage> {
           GameWidget<SplitScreenRaceGame>(game: game),
           Row(
             children: [
-              Expanded(child: _TouchZone(player: 1, onInput: _inputOne, onClear: _clearOne)),
-              Expanded(child: _TouchZone(player: 2, onInput: _inputTwo, onClear: _clearTwo)),
+              Expanded(
+                child: _TouchZone(
+                  player: 1,
+                  onInput: _inputOne,
+                  onClear: _clearOne,
+                ),
+              ),
+              Expanded(
+                child: _TouchZone(
+                  player: 2,
+                  onInput: _inputTwo,
+                  onClear: _clearTwo,
+                ),
+              ),
             ],
           ),
-          SafeArea(child: _SplitHud(game: game, onExit: _exitRace)),
+          SafeArea(
+            child: _SplitHud(game: game, onExit: _exitRace),
+          ),
         ],
       ),
     );
@@ -134,7 +152,11 @@ class _SplitScreenRacePageState extends State<SplitScreenRacePage> {
 }
 
 class _TouchZone extends StatelessWidget {
-  const _TouchZone({required this.player, required this.onInput, required this.onClear});
+  const _TouchZone({
+    required this.player,
+    required this.onInput,
+    required this.onClear,
+  });
   final int player;
   final GestureDragUpdateCallback onInput;
   final VoidCallback onClear;
@@ -203,12 +225,21 @@ class _SplitHud extends StatelessWidget {
             Positioned(
               left: 14,
               bottom: 12,
-              child: _PlayerControls(player: 1, game: game, accent: FlightColors.cyan),
+              child: _PlayerControls(
+                player: 1,
+                game: game,
+                accent: FlightColors.cyan,
+              ),
             ),
             Positioned(
               right: 14,
               bottom: 12,
-              child: _PlayerControls(player: 2, game: game, accent: FlightColors.orange, reverse: true),
+              child: _PlayerControls(
+                player: 2,
+                game: game,
+                accent: FlightColors.orange,
+                reverse: true,
+              ),
             ),
             Positioned.fill(
               child: IgnorePointer(
@@ -222,7 +253,14 @@ class _SplitHud extends StatelessWidget {
                       border: Border.all(color: Colors.white24),
                     ),
                     child: const Center(
-                      child: Text('VS', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: FlightColors.orange)),
+                      child: Text(
+                        'VS',
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w900,
+                          color: FlightColors.orange,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -236,7 +274,15 @@ class _SplitHud extends StatelessWidget {
 }
 
 class _PlayerHeader extends StatelessWidget {
-  const _PlayerHeader({required this.name, required this.progress, required this.integrity, required this.wing, required this.color, required this.banner, this.alignRight = false});
+  const _PlayerHeader({
+    required this.name,
+    required this.progress,
+    required this.integrity,
+    required this.wing,
+    required this.color,
+    required this.banner,
+    this.alignRight = false,
+  });
   final String name;
   final double progress;
   final double integrity;
@@ -260,23 +306,57 @@ class _PlayerHeader extends StatelessWidget {
             border: Border.all(color: color.withValues(alpha: .32)),
           ),
           child: Column(
-            crossAxisAlignment: alignRight ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+            crossAxisAlignment: alignRight
+                ? CrossAxisAlignment.end
+                : CrossAxisAlignment.start,
             children: [
               Row(
-                textDirection: alignRight ? TextDirection.rtl : TextDirection.ltr,
+                textDirection: alignRight
+                    ? TextDirection.rtl
+                    : TextDirection.ltr,
                 children: [
-                  Text(name, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900)),
+                  Text(
+                    name,
+                    style: const TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
                   const SizedBox(width: 7),
-                  Text('WING $wing', style: TextStyle(fontSize: 8, color: color, fontWeight: FontWeight.w900)),
+                  Text(
+                    'WING $wing',
+                    style: TextStyle(
+                      fontSize: 8,
+                      color: color,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 5),
-              LinearProgressIndicator(value: progress, minHeight: 5, color: color, backgroundColor: Colors.white12),
+              LinearProgressIndicator(
+                value: progress,
+                minHeight: 5,
+                color: color,
+                backgroundColor: Colors.white12,
+              ),
               const SizedBox(height: 4),
-              LinearProgressIndicator(value: integrity / 100, minHeight: 3, color: integrity > 35 ? FlightColors.green : FlightColors.red, backgroundColor: Colors.white10),
+              LinearProgressIndicator(
+                value: integrity / 100,
+                minHeight: 3,
+                color: integrity > 35 ? FlightColors.green : FlightColors.red,
+                backgroundColor: Colors.white10,
+              ),
               if (banner.isNotEmpty) ...[
                 const SizedBox(height: 4),
-                Text(banner, style: TextStyle(fontSize: 8, color: color, fontWeight: FontWeight.w900)),
+                Text(
+                  banner,
+                  style: TextStyle(
+                    fontSize: 8,
+                    color: color,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
               ],
             ],
           ),
@@ -287,7 +367,12 @@ class _PlayerHeader extends StatelessWidget {
 }
 
 class _PlayerControls extends StatelessWidget {
-  const _PlayerControls({required this.player, required this.game, required this.accent, this.reverse = false});
+  const _PlayerControls({
+    required this.player,
+    required this.game,
+    required this.accent,
+    this.reverse = false,
+  });
   final int player;
   final SplitScreenRaceGame game;
   final Color accent;
@@ -296,20 +381,51 @@ class _PlayerControls extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controls = <Widget>[
-      _PowerMini(icon: Icons.local_fire_department_rounded, label: 'FIRE', color: const Color(0xFFFF6D3A), onTap: () => game.usePower(player, RacePowerType.fireBurst)),
-      _PowerMini(icon: Icons.blur_circular_rounded, label: 'WARP', color: FlightColors.violet, onTap: () => game.usePower(player, RacePowerType.distortionPulse)),
-      _PowerMini(icon: Icons.air_rounded, label: 'SLOW', color: FlightColors.cyan, onTap: () => game.usePower(player, RacePowerType.slowWindField)),
-      _PowerMini(icon: Icons.bolt_rounded, label: 'BOOST', color: accent, onTap: () => game.boost(player), large: true),
+      _PowerMini(
+        icon: Icons.local_fire_department_rounded,
+        label: 'FIRE',
+        color: const Color(0xFFFF6D3A),
+        onTap: () => game.usePower(player, RacePowerType.fireBurst),
+      ),
+      _PowerMini(
+        icon: Icons.blur_circular_rounded,
+        label: 'WARP',
+        color: FlightColors.violet,
+        onTap: () => game.usePower(player, RacePowerType.distortionPulse),
+      ),
+      _PowerMini(
+        icon: Icons.air_rounded,
+        label: 'SLOW',
+        color: FlightColors.cyan,
+        onTap: () => game.usePower(player, RacePowerType.slowWindField),
+      ),
+      _PowerMini(
+        icon: Icons.bolt_rounded,
+        label: 'BOOST',
+        color: accent,
+        onTap: () => game.boost(player),
+        large: true,
+      ),
     ];
     return Row(
       textDirection: reverse ? TextDirection.rtl : TextDirection.ltr,
-      children: controls.map((w) => Padding(padding: const EdgeInsets.only(right: 5), child: w)).toList(),
+      children: controls
+          .map(
+            (w) => Padding(padding: const EdgeInsets.only(right: 5), child: w),
+          )
+          .toList(),
     );
   }
 }
 
 class _PowerMini extends StatelessWidget {
-  const _PowerMini({required this.icon, required this.label, required this.color, required this.onTap, this.large = false});
+  const _PowerMini({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.onTap,
+    this.large = false,
+  });
   final IconData icon;
   final String label;
   final Color color;
@@ -337,7 +453,13 @@ class _PowerMini extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(icon, size: large ? 25 : 19, color: color),
-              Text(label, style: const TextStyle(fontSize: 6.5, fontWeight: FontWeight.w900)),
+              Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 6.5,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
             ],
           ),
         ),

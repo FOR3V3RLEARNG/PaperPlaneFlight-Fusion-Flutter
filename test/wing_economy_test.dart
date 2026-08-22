@@ -16,14 +16,17 @@ void main() {
       expect(await wallet.addTokens(15), 55);
     });
 
-    test('spendTokens fails without sufficient balance and leaves it unchanged', () async {
-      final wallet = TokenWalletRepository();
-      await wallet.addTokens(100);
-      expect(await wallet.spendTokens(500), isFalse);
-      expect(await wallet.balance(), 100);
-      expect(await wallet.spendTokens(100), isTrue);
-      expect(await wallet.balance(), 0);
-    });
+    test(
+      'spendTokens fails without sufficient balance and leaves it unchanged',
+      () async {
+        final wallet = TokenWalletRepository();
+        await wallet.addTokens(100);
+        expect(await wallet.spendTokens(500), isFalse);
+        expect(await wallet.balance(), 100);
+        expect(await wallet.spendTokens(100), isTrue);
+        expect(await wallet.balance(), 0);
+      },
+    );
   });
 
   group('WingProgressionRepository', () {
@@ -35,14 +38,17 @@ void main() {
       expect(progress.bossUnlocked, isFalse);
     });
 
-    test('upgrade fails and spends nothing when tokens are insufficient', () async {
-      final wallet = TokenWalletRepository();
-      final repo = WingProgressionRepository(wallet: wallet);
-      final result = await repo.upgrade('sky_islands');
-      expect(result.success, isFalse);
-      expect(await wallet.balance(), 0);
-      expect((await repo.load('sky_islands')).wingLevel, 1);
-    });
+    test(
+      'upgrade fails and spends nothing when tokens are insufficient',
+      () async {
+        final wallet = TokenWalletRepository();
+        final repo = WingProgressionRepository(wallet: wallet);
+        final result = await repo.upgrade('sky_islands');
+        expect(result.success, isFalse);
+        expect(await wallet.balance(), 0);
+        expect((await repo.load('sky_islands')).wingLevel, 1);
+      },
+    );
 
     test('upgrade spends the exact cost and advances the wing level', () async {
       final wallet = TokenWalletRepository();
@@ -54,21 +60,24 @@ void main() {
       expect(await wallet.balance(), 1000 - 288); // 120 + 2*2*42
     });
 
-    test('boss unlocks only once wing level reaches 10 and stays cleared once marked', () async {
-      final wallet = TokenWalletRepository();
-      final repo = WingProgressionRepository(wallet: wallet);
-      await wallet.addTokens(1000000);
-      for (var i = 0; i < 9; i++) {
-        await repo.upgrade('sky_islands');
-      }
-      final maxed = await repo.load('sky_islands');
-      expect(maxed.wingLevel, 10);
-      expect(maxed.bossUnlocked, isTrue);
+    test(
+      'boss unlocks only once wing level reaches 10 and stays cleared once marked',
+      () async {
+        final wallet = TokenWalletRepository();
+        final repo = WingProgressionRepository(wallet: wallet);
+        await wallet.addTokens(1000000);
+        for (var i = 0; i < 9; i++) {
+          await repo.upgrade('sky_islands');
+        }
+        final maxed = await repo.load('sky_islands');
+        expect(maxed.wingLevel, 10);
+        expect(maxed.bossUnlocked, isTrue);
 
-      await repo.markBossCleared('sky_islands');
-      final cleared = await repo.load('sky_islands');
-      expect(cleared.bossCleared, isTrue);
-      expect(cleared.bossUnlocked, isFalse);
-    });
+        await repo.markBossCleared('sky_islands');
+        final cleared = await repo.load('sky_islands');
+        expect(cleared.bossCleared, isTrue);
+        expect(cleared.bossUnlocked, isFalse);
+      },
+    );
   });
 }

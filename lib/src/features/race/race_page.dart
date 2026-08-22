@@ -68,8 +68,12 @@ class _RacePageState extends State<RacePage> {
             behavior: HitTestBehavior.opaque,
             onPanUpdate: (details) {
               velocity = Offset(
-                (velocity.dx * .5 + details.delta.dx * .5).clamp(-7, 7).toDouble(),
-                (velocity.dy * .5 + details.delta.dy * .5).clamp(-7, 7).toDouble(),
+                (velocity.dx * .5 + details.delta.dx * .5)
+                    .clamp(-7, 7)
+                    .toDouble(),
+                (velocity.dy * .5 + details.delta.dy * .5)
+                    .clamp(-7, 7)
+                    .toDouble(),
               );
               game.setInput(velocity.dx / 5.2, velocity.dy / 5.2);
             },
@@ -83,7 +87,9 @@ class _RacePageState extends State<RacePage> {
             },
             child: GameWidget<RivalRaceGame>(game: game),
           ),
-          SafeArea(child: _RaceHud(game: game, launch: widget.launch)),
+          SafeArea(
+            child: _RaceHud(game: game, launch: widget.launch),
+          ),
         ],
       ),
     );
@@ -116,7 +122,10 @@ class _RaceHud extends StatelessWidget {
               right: 64,
               top: 8,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 9,
+                ),
                 decoration: BoxDecoration(
                   color: FlightColors.deepNavy.withValues(alpha: .60),
                   borderRadius: BorderRadius.circular(15),
@@ -124,9 +133,19 @@ class _RaceHud extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Expanded(child: _Stat('RACE', hud.position == RacePosition.first ? '1ST' : '2ND')),
+                    Expanded(
+                      child: _Stat(
+                        'RACE',
+                        hud.position == RacePosition.first ? '1ST' : '2ND',
+                      ),
+                    ),
                     Expanded(child: _Stat('WING', 'LV ${hud.wingLevel}')),
-                    Expanded(child: _Stat('GAP', '${(hud.gap * 100).toStringAsFixed(1)}%')),
+                    Expanded(
+                      child: _Stat(
+                        'GAP',
+                        '${(hud.gap * 100).toStringAsFixed(1)}%',
+                      ),
+                    ),
                     Expanded(child: _Stat('TOKENS', '${hud.tokens}')),
                   ],
                 ),
@@ -146,7 +165,10 @@ class _RaceHud extends StatelessWidget {
                   child: Text(
                     hud.banner,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(fontWeight: FontWeight.w900, color: FlightColors.orange),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w900,
+                      color: FlightColors.orange,
+                    ),
                   ),
                 ),
               ),
@@ -158,19 +180,47 @@ class _RaceHud extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Expanded(child: _Integrity(name: launch.playerName, value: hud.integrity, color: FlightColors.cyan)),
+                      Expanded(
+                        child: _Integrity(
+                          name: launch.playerName,
+                          value: hud.integrity,
+                          color: FlightColors.cyan,
+                        ),
+                      ),
                       const SizedBox(width: 8),
-                      Expanded(child: _Integrity(name: launch.rivalName, value: hud.rivalIntegrity, color: FlightColors.red)),
+                      Expanded(
+                        child: _Integrity(
+                          name: launch.rivalName,
+                          value: hud.rivalIntegrity,
+                          color: FlightColors.red,
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 10),
                   Row(
                     children: [
-                      _PowerButton(label: 'FIRE', icon: Icons.local_fire_department_rounded, color: const Color(0xFFFF6D3A), onTap: () => game.usePower(RacePowerType.fireBurst)),
+                      _PowerButton(
+                        label: 'FIRE',
+                        icon: Icons.local_fire_department_rounded,
+                        color: const Color(0xFFFF6D3A),
+                        onTap: () => game.usePower(RacePowerType.fireBurst),
+                      ),
                       const SizedBox(width: 7),
-                      _PowerButton(label: 'WARP', icon: Icons.blur_circular_rounded, color: FlightColors.violet, onTap: () => game.usePower(RacePowerType.distortionPulse)),
+                      _PowerButton(
+                        label: 'WARP',
+                        icon: Icons.blur_circular_rounded,
+                        color: FlightColors.violet,
+                        onTap: () =>
+                            game.usePower(RacePowerType.distortionPulse),
+                      ),
                       const SizedBox(width: 7),
-                      _PowerButton(label: 'SLOW', icon: Icons.air_rounded, color: FlightColors.cyan, onTap: () => game.usePower(RacePowerType.slowWindField)),
+                      _PowerButton(
+                        label: 'SLOW',
+                        icon: Icons.air_rounded,
+                        color: FlightColors.cyan,
+                        onTap: () => game.usePower(RacePowerType.slowWindField),
+                      ),
                       const Spacer(),
                       Semantics(
                         button: true,
@@ -181,8 +231,15 @@ class _RaceHud extends StatelessWidget {
                           child: Container(
                             width: 68,
                             height: 68,
-                            decoration: const BoxDecoration(shape: BoxShape.circle, color: FlightColors.cyan),
-                            child: const Icon(Icons.bolt_rounded, color: FlightColors.deepNavy, size: 36),
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: FlightColors.cyan,
+                            ),
+                            child: const Icon(
+                              Icons.bolt_rounded,
+                              color: FlightColors.deepNavy,
+                              size: 36,
+                            ),
                           ),
                         ),
                       ),
@@ -204,62 +261,96 @@ class _Stat extends StatelessWidget {
   final String value;
   @override
   Widget build(BuildContext context) => Column(
-        children: [
-          Text(label, style: const TextStyle(fontSize: 7, color: Color(0xFFB8CEE0), fontWeight: FontWeight.w900)),
-          Text(value, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900)),
-        ],
-      );
+    children: [
+      Text(
+        label,
+        style: const TextStyle(
+          fontSize: 7,
+          color: Color(0xFFB8CEE0),
+          fontWeight: FontWeight.w900,
+        ),
+      ),
+      Text(
+        value,
+        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
+      ),
+    ],
+  );
 }
 
 class _Integrity extends StatelessWidget {
-  const _Integrity({required this.name, required this.value, required this.color});
+  const _Integrity({
+    required this.name,
+    required this.value,
+    required this.color,
+  });
   final String name;
   final double value;
   final Color color;
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.all(9),
-        decoration: BoxDecoration(color: FlightColors.deepNavy.withValues(alpha: .58), borderRadius: BorderRadius.circular(12)),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(name, style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900)),
-            const SizedBox(height: 4),
-            LinearProgressIndicator(value: value / 100, minHeight: 6, color: color, borderRadius: BorderRadius.circular(9), backgroundColor: Colors.white10),
-          ],
+    padding: const EdgeInsets.all(9),
+    decoration: BoxDecoration(
+      color: FlightColors.deepNavy.withValues(alpha: .58),
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          name,
+          style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w900),
         ),
-      );
+        const SizedBox(height: 4),
+        LinearProgressIndicator(
+          value: value / 100,
+          minHeight: 6,
+          color: color,
+          borderRadius: BorderRadius.circular(9),
+          backgroundColor: Colors.white10,
+        ),
+      ],
+    ),
+  );
 }
 
 class _PowerButton extends StatelessWidget {
-  const _PowerButton({required this.label, required this.icon, required this.color, required this.onTap});
+  const _PowerButton({
+    required this.label,
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
   final String label;
   final IconData icon;
   final Color color;
   final VoidCallback onTap;
   @override
   Widget build(BuildContext context) => Semantics(
-        button: true,
-        label: 'Use $label power',
-        child: InkWell(
-          onTap: onTap,
+    button: true,
+    label: 'Use $label power',
+    child: InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        width: 57,
+        height: 57,
+        decoration: BoxDecoration(
+          color: FlightColors.deepNavy.withValues(alpha: .72),
           borderRadius: BorderRadius.circular(12),
-          child: Container(
-            width: 57,
-            height: 57,
-            decoration: BoxDecoration(
-              color: FlightColors.deepNavy.withValues(alpha: .72),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: color.withValues(alpha: .45)),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(icon, color: color, size: 21),
-                Text(label, style: const TextStyle(fontSize: 7, fontWeight: FontWeight.w900)),
-              ],
-            ),
-          ),
+          border: Border.all(color: color.withValues(alpha: .45)),
         ),
-      );
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: color, size: 21),
+            Text(
+              label,
+              style: const TextStyle(fontSize: 7, fontWeight: FontWeight.w900),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
 }
