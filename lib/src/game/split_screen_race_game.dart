@@ -229,7 +229,7 @@ class SplitScreenRaceGame extends FlameGame {
     final iy = distorted ? rawInput.y * .55 + math.sin(elapsed * 7) * .35 : rawInput.y;
     racer.velocity.x += ix * 700 * control * dt;
     racer.velocity.y += iy * 520 * control * dt;
-    racer.velocity *= math.max(0, 1 - dt * 4.6).toDouble();
+    racer.velocity.scale(math.max(0, 1 - dt * 4.6).toDouble());
     racer.position += racer.velocity * dt;
     racer.x = racer.x.clamp(laneMin, laneMax).toDouble();
     racer.y = racer.y.clamp(size.y * .20, size.y * .86).toDouble();

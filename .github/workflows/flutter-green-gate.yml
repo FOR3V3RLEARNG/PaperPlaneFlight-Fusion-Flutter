@@ -30,9 +30,15 @@ jobs:
           cache: true
 
       - name: Scaffold Android when source-only
+        shell: bash
         run: |
           if [ ! -d android ]; then
-            flutter create --platforms=android --project-name=paper_plane_flight .
+            scaffold_dir="$(mktemp -d)"
+            pushd "$scaffold_dir"
+            flutter create --platforms=android --project-name=paper_plane_flight paper_plane_scaffold
+            popd
+            cp -R "$scaffold_dir/paper_plane_scaffold/android" ./android
+            rm -rf "$scaffold_dir"
           fi
 
       - run: flutter doctor -v
@@ -66,9 +72,15 @@ jobs:
           cache: true
 
       - name: Scaffold Android when source-only
+        shell: bash
         run: |
           if [ ! -d android ]; then
-            flutter create --platforms=android --project-name=paper_plane_flight .
+            scaffold_dir="$(mktemp -d)"
+            pushd "$scaffold_dir"
+            flutter create --platforms=android --project-name=paper_plane_flight paper_plane_scaffold
+            popd
+            cp -R "$scaffold_dir/paper_plane_scaffold/android" ./android
+            rm -rf "$scaffold_dir"
           fi
 
       - run: flutter pub get
@@ -99,10 +111,10 @@ jobs:
           script: |
             adb devices
             flutter devices
-            flutter drive \\
-              --driver=test_driver/integration_test.dart \\
-              --target=integration_test/app_smoke_test.dart \\
-              -d emulator-5554 \\
+            flutter drive \
+              --driver=test_driver/integration_test.dart \
+              --target=integration_test/app_smoke_test.dart \
+              -d emulator-5554 \
               --no-dds
 
   release-android:
@@ -121,9 +133,15 @@ jobs:
           cache: true
 
       - name: Scaffold Android when source-only
+        shell: bash
         run: |
           if [ ! -d android ]; then
-            flutter create --platforms=android --project-name=paper_plane_flight .
+            scaffold_dir="$(mktemp -d)"
+            pushd "$scaffold_dir"
+            flutter create --platforms=android --project-name=paper_plane_flight paper_plane_scaffold
+            popd
+            cp -R "$scaffold_dir/paper_plane_scaffold/android" ./android
+            rm -rf "$scaffold_dir"
           fi
 
       - run: flutter pub get
